@@ -374,7 +374,7 @@ export default function Command() {
       searchBarPlaceholder="Search GitHub issues, pull requests, and discussions..."
       throttle={true}
     >
-      {(error ? (
+      {error ? (
         <List.Item
           title="Error occurred"
           subtitle={error}
@@ -401,19 +401,19 @@ export default function Command() {
                 subtitle={result.repository}
                 icon={{ source: icon, tintColor: color }}
                 actions={
-                  (<ActionPanel>
-                    {<Action.OpenInBrowser url={result.url} /> as any}
-                    {<Action.CopyToClipboard
+                  <ActionPanel>
+                    <Action.OpenInBrowser url={result.url} />
+                    <Action.CopyToClipboard
                       title="Copy URL"
                       content={result.url}
-                    /> as any}
-                  </ActionPanel>) as any
+                    />
+                  </ActionPanel>
                 }
               />
             );
           })}
         </>
-      )) as any}
+      )}
     </List>
   );
 }
