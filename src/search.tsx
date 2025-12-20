@@ -171,6 +171,7 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
           // Handle errors
           if (message.error) {
             console.error("MCP returned error:", message.error);
+            clearTimeout(responseTimeout);
             mcpProcess.kill();
             reject(
               new Error(
@@ -194,6 +195,7 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
 
     mcpProcess.on("error", (error: NodeJS.ErrnoException) => {
       console.error("MCP process error:", error);
+      clearTimeout(responseTimeout);
       if (error.code === "ENOENT") {
         reject(
           new Error(
