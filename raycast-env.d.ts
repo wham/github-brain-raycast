@@ -26,3 +26,4 @@ declare namespace Arguments {
   /** Arguments passed to the `search` command */
   export type Search = {}
 }
+

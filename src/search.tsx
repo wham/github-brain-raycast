@@ -1,6 +1,4 @@
-// @ts-nocheck
-/// <reference types="@raycast/api" />
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   ActionPanel,
   Action,
@@ -28,7 +26,7 @@ interface SearchResult {
 
 function getIconAndColor(
   type: string,
-  state: string
+  state: string,
 ): { icon: Icon; color: Color } {
   switch (`${type}:${state}`) {
     case "issue:open":
@@ -86,11 +84,10 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
     let responseData = "";
     let errorData = "";
     let hasReceivedResponse = false;
-    let responseTimeout: NodeJS.Timeout;
     let isInitialized = false;
 
     // Set a timeout for the MCP response
-    responseTimeout = setTimeout(() => {
+    const responseTimeout: NodeJS.Timeout = setTimeout(() => {
       if (!hasReceivedResponse) {
         mcpProcess.kill();
         reject(new Error("MCP request timed out"));
@@ -123,7 +120,7 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
               params: {},
             };
             mcpProcess.stdin.write(
-              JSON.stringify(initializedNotification) + "\n"
+              JSON.stringify(initializedNotification) + "\n",
             );
 
             // Now send the actual search request
@@ -165,7 +162,7 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
               console.error("Parse error:", error);
               mcpProcess.kill();
               reject(
-                new Error(`Failed to parse MCP response: ${error.message}`)
+                new Error(`Failed to parse MCP response: ${error.message}`),
               );
               return;
             }
@@ -177,8 +174,8 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
             mcpProcess.kill();
             reject(
               new Error(
-                `MCP error: ${message.error.message || "Unknown error"}`
-              )
+                `MCP error: ${message.error.message || "Unknown error"}`,
+              ),
             );
             return;
           }
@@ -195,13 +192,13 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
       console.error("MCP stderr:", error);
     });
 
-    mcpProcess.on("error", (error) => {
+    mcpProcess.on("error", (error: NodeJS.ErrnoException) => {
       console.error("MCP process error:", error);
       if (error.code === "ENOENT") {
         reject(
           new Error(
-            `GitHub Brain executable not found: "${binaryPath}". Please check the executable path in preferences.`
-          )
+            `GitHub Brain executable not found: "${binaryPath}". Please check the executable path in preferences.`,
+          ),
         );
       } else {
         reject(new Error(`Failed to start MCP server: ${error.message}`));
@@ -229,7 +226,7 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
       console.error("Error writing to MCP stdin:", error);
       clearTimeout(responseTimeout);
       reject(
-        new Error(`Failed to send request to MCP server: ${error.message}`)
+        new Error(`Failed to send request to MCP server: ${error.message}`),
       );
     }
 
@@ -279,7 +276,7 @@ function parseMCPResponse(responseData: string): SearchResult[] {
       } else if (response.error) {
         console.error("MCP returned error:", response.error);
         throw new Error(
-          `MCP server error: ${response.error.message || "Unknown error"}`
+          `MCP server error: ${response.error.message || "Unknown error"}`,
         );
       }
     } catch (e) {
@@ -377,7 +374,7 @@ export default function Command() {
       searchBarPlaceholder="Search GitHub issues, pull requests, and discussions..."
       throttle={true}
     >
-      {error ? (
+      {(error ? (
         <List.Item
           title="Error occurred"
           subtitle={error}
@@ -393,28 +390,30 @@ export default function Command() {
           }}
         />
       ) : (
-        results.map((result, index) => {
-          const { icon, color } = getIconAndColor(result.type, result.state);
+        <>
+          {results.map((result, index) => {
+            const { icon, color } = getIconAndColor(result.type, result.state);
 
-          return (
-            <List.Item
-              key={`${result.url}-${index}`}
-              title={result.title}
-              subtitle={result.repository}
-              icon={{ source: icon, tintColor: color }}
-              actions={
-                <ActionPanel>
-                  <Action.OpenInBrowser url={result.url} />
-                  <Action.CopyToClipboard
-                    title="Copy URL"
-                    content={result.url}
-                  />
-                </ActionPanel>
-              }
-            />
-          );
-        })
-      )}
+            return (
+              <List.Item
+                key={`${result.url}-${index}`}
+                title={result.title}
+                subtitle={result.repository}
+                icon={{ source: icon, tintColor: color }}
+                actions={
+                  (<ActionPanel>
+                    {<Action.OpenInBrowser url={result.url} /> as any}
+                    {<Action.CopyToClipboard
+                      title="Copy URL"
+                      content={result.url}
+                    /> as any}
+                  </ActionPanel>) as any
+                }
+              />
+            );
+          })}
+        </>
+      )) as any}
     </List>
   );
 }

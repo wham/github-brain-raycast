@@ -3,7 +3,7 @@
   "name": "github-brain",
   "title": "GitHub Brain",
   "description": "Search GitHub issues, pull requests, and discussions",
-  "icon": "🧠",
+  "icon": "icon.svg",
   "author": "wham",
   "categories": [
     "Developer Tools"
