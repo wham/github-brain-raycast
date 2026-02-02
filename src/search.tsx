@@ -61,8 +61,11 @@ async function callMCPSearch(query: string): Promise<SearchResult[]> {
 
     // Build the command: <githubBrainCommand> mcp [-m <homeDir>]
     // Organization will be loaded from .env file in the home directory
-    const binaryPath = expandPath(preferences.githubBrainCommand);
-    const args = ["mcp"];
+    // Parse the command to support both binary paths and commands with arguments (e.g., "npx github-brain@latest")
+    const commandParts = expandPath(preferences.githubBrainCommand).split(/\s+/);
+    const binaryPath = commandParts[0];
+    const commandArgs = commandParts.slice(1);
+    const args = [...commandArgs, "mcp"];
     if (preferences.homeDir) {
       const expandedHomeDir = expandPath(preferences.homeDir);
       args.push("-m", expandedHomeDir);
