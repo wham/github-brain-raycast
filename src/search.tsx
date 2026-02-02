@@ -338,7 +338,7 @@ function parseSearchResults(content: string): SearchResult[] {
     }
   }
 
-  return results.slice(0, 10); // Limit to 10 results as specified
+  return results.slice(0, 20); // Limit to 20 results
 }
 
 export default function Command() {
