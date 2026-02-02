@@ -79,7 +79,7 @@ After installing the extension, you need to configure it in Raycast preferences:
 1. Open Raycast (⌘+Space)
 2. Type "GitHub Brain" or "Search"
 3. Start typing your search query
-4. The extension will display up to 10 matching results
+4. The extension will display up to 20 matching results
 5. Press Enter to open the item in your browser
 6. Press ⌘+C to copy the URL to clipboard
 
